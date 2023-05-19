@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env
+    restart: always
+    ports:
+      -  '${DB_PORT}:${DB_PORT}'
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    networks:
+      - db-net
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    command: redis-server --port ${REDIS_PORT} --save 20 1 --loglevel warning --requirepass ${REDIS_PASS}
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - db-net
+
+networks:
+  db-net:
+    driver: bridge

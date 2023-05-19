@@ -20,3 +20,11 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+.env
+tests.*
+*.toml
+*.lock
+venv/
+*.log
+redis-data/
+static/
