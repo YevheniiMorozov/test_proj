@@ -1,6 +1,7 @@
 FROM python:3.10-slim AS builder
 
 COPY . .
+COPY ./creds.json .
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1

@@ -30,3 +30,4 @@ redis-data/
 static/
 __pycache__/
 .idea
+creds.*
