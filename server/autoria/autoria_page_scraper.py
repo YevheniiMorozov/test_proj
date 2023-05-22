@@ -25,7 +25,7 @@ class AutoRiaPageScraper:
     DATA_HASH_XPATH = "//script/@data-hash"
     CAR_ID_XPATH = "//section[@class='m-padding mb-20 ']/ul/li[2]/span/text()"
     TITLE_XPATH = "//h1[@class='head']/@title"
-    FIRST_PATH_XPATH = "//div[@class='price_value']/strong/text()"
+    FIRST_PRICE_XPATH = "//div[@class='price_value']/strong/text()"
     SECOND_PRICE_XPATH = "//div[@class='price_value price_value--additional']/text()"
     MILEAGE_XPATH = "//div[@class='base-information bold']/span[@class='size18']/text()"
     PROFILE_NAME_XPATH = "//div[@class='seller_info_name bold']/text()"
@@ -37,11 +37,11 @@ class AutoRiaPageScraper:
         self.fetch = Fetcher()
 
     def _extract_price(self, tree: Selector) -> int:
-        price = tree.xpath(self.FIRST_PATH_XPATH).get()
+        price = tree.xpath(self.FIRST_PRICE_XPATH).get()
         if price:
-            return int(price.replace(' ', '')[:-1])
+            return int(price.strip().replace(' ', '')[:-1])
         price = tree.xpath(self.SECOND_PRICE_XPATH).get()
-        return int(price.replace(' ', '').split("$")[0])
+        return int(price.strip().replace(' ', '').split("$")[0])
 
     def _get_id_and_hash(self, tree: Selector) -> Tuple[str, str]:
         """Params for api request, to get phone number"""
