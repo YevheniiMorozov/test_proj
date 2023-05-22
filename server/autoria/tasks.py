@@ -1,12 +1,14 @@
 import logging
 import uuid
+from datetime import date
 
 from django.core.cache import caches
+
 from server.celery import app
 from autoria.models import Cars
 from autoria.autoria_page_scraper import AutoRiaPageScraper, CarItem
 from autoria.autoria_url_crawler import AutoRiaUrlCrawler
-
+from autoria.spreadsheets_module import SpreadsheetsModule
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ def car_page_scraper(url):
     cache = caches['default']
     logger.info(f"In work url {url}")
     crawler = AutoRiaPageScraper({})
-    data = crawler.crawler(url)
+    data = crawler.run(url)
     cache.set(uuid.uuid4(), data, None)
 
 
@@ -45,3 +47,19 @@ def manager_task():
         logger.info(url)
         kwargs = {"url": url}
         car_page_scraper.apply_async(kwargs=kwargs)
+
+
+@app.task
+def spreadsheets_worker():
+    cache = caches["sheets"]
+    table_name = date.today().strftime("%Y-%m-%d")
+    data = []
+    for key in cache.iter_keys("*"):
+        cache_item = cache.get(key)
+        if cache_item:
+            data.extend(cache_item)
+        cache.delete(key)
+    if data:
+        m = SpreadsheetsModule(table_name)
+        m.add_data_to_table(data)
+

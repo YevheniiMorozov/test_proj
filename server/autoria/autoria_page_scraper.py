@@ -68,7 +68,7 @@ class AutoRiaPageScraper:
         data = resp.json()
         number = data.get('formattedPhoneNumber')
         if number:
-            return '+38 ' + number
+            return '38 ' + number
 
     @staticmethod
     def _check_data(d: CarItem):
@@ -76,7 +76,7 @@ class AutoRiaPageScraper:
             raise ScrappingExceptions
 
     @retry((ScrappingExceptions, AttributeError), tries=20, delay=3)
-    def crawler(self, url: str) -> CarItem | None:
+    def run(self, url: str) -> CarItem | None:
         body = self.fetch.send_request('GET', url, proxies=self.proxies)
         if url.startswith('https://auto.ria.com/uk/newauto'):
             return

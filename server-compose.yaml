@@ -77,7 +77,20 @@ services:
     build:
       context: ././
       dockerfile: server.Dockerfile
-    command: celery -A server worker -B -Q car_page_scraper -l INFO -c 1
+    command: celery -A server worker -B -Q car_page_scraper -l INFO -c 5
+    depends_on:
+      - server
+    env_file:
+      - .env
+    networks:
+      - celery_django_db-net
+
+  celery-spreadsheets-worker:
+    container_name: celery-spreadsheets-worker
+    build:
+      context: ././
+      dockerfile: server.Dockerfile
+    command: celery -A server worker -B -Q spreadsheets_worker -l INFO -c 1
     depends_on:
       - server
     env_file:

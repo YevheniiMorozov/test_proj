@@ -21,6 +21,7 @@ from celery.schedules import crontab
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -28,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -147,11 +148,16 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 
 
 CACHE_ITEMS_DB = 1
+CACHE_FOR_SPREADSHEETS = 2
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_URL + str(CACHE_ITEMS_DB),
-    }
+    },
+    "sheets": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL + str(CACHE_FOR_SPREADSHEETS),
+    },
 }
 
 
@@ -190,3 +196,6 @@ LOGGING = {
         }
     }
 }
+
+SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR.parent, 'creds.json')
+SPREADSHEETS_ID = config('SPREADSHEETS_ID')
