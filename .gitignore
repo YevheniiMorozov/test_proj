@@ -31,3 +31,4 @@ static/
 __pycache__/
 .idea
 creds.*
+.idea/

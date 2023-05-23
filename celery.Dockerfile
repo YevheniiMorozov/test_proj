@@ -13,7 +13,3 @@ RUN apt-get update && apt-get -y upgrade && \
     libxml2-dev libxslt-dev libc-dev libffi-dev
 
 RUN pip install -r requirements.txt
-
-RUN chmod +x entrypoint.sh
-
-ENTRYPOINT ["bash","/entrypoint.sh"]

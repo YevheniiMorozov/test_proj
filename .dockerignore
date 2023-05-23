@@ -1,3 +1,5 @@
 redis-data
 *.log
 /static/
+__pycache__/
+static/

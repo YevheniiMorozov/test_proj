@@ -9,13 +9,12 @@ services:
     restart: always
     volumes:
       - static_volume:/static
-    command: bash -c 'ls static && python3 manage.py migrate --no-input && python3 manage.py collectstatic --no-input && gunicorn server.wsgi:application --bind 0.0.0.0:51117'
     ports:
       - "51117:51117"
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   nginx-server:
     container_name: nginx-server
@@ -31,75 +30,75 @@ services:
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   celery-manager-worker:
     container_name: celery-manager-worker
     build:
       context: ././
-      dockerfile: server.Dockerfile
+      dockerfile: celery.Dockerfile
     command: celery --app server worker -Q manager_task -c 1 --loglevel=info
     depends_on:
       - server
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   celery-db-worker:
     container_name: celery-db-worker
     build:
       context: ././
-      dockerfile: server.Dockerfile
-    command: celery -A server worker -B -Q car_db_worker -l INFO -c 1
+      dockerfile: celery.Dockerfile
+    command: celery -A server worker -B -Q car_db_saver -l INFO -c 1
     depends_on:
       - server
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   celery-beat-worker:
     container_name: celery-beat-worker
     build:
       context: ././
-      dockerfile: server.Dockerfile
+      dockerfile: celery.Dockerfile
     command: celery --app server beat --loglevel=info
     depends_on:
       - server
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   celery-page-worker:
     container_name: celery-page-worker
     build:
       context: ././
-      dockerfile: server.Dockerfile
+      dockerfile: celery.Dockerfile
     command: celery -A server worker -B -Q car_page_scraper -l INFO -c 5
     depends_on:
       - server
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
   celery-spreadsheets-worker:
     container_name: celery-spreadsheets-worker
     build:
       context: ././
-      dockerfile: server.Dockerfile
+      dockerfile: celery.Dockerfile
     command: celery -A server worker -B -Q spreadsheets_worker -l INFO -c 1
     depends_on:
       - server
     env_file:
       - .env
     networks:
-      - celery_django_db-net
+      - test_proj_db-net
 
 networks:
-  celery_django_db-net:
+  test_proj_db-net:
     external: true
 
 

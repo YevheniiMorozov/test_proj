@@ -29,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -197,5 +197,5 @@ LOGGING = {
     }
 }
 
-SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR.parent, 'creds.json')
+SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'creds.json')
 SPREADSHEETS_ID = config('SPREADSHEETS_ID')

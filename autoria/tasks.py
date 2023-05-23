@@ -6,9 +6,8 @@ from django.core.cache import caches
 
 from server.celery import app
 from autoria.models import Cars
-from autoria.autoria_page_scraper import AutoRiaPageScraper, CarItem
-from autoria.autoria_url_crawler import AutoRiaUrlCrawler
-from autoria.spreadsheets_module import SpreadsheetsModule
+from autoria.scrapers import AutoRiaPageScraper, CarItem, AutoRiaUrlCrawler
+from drivers import SpreadsheetsModule
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +22,7 @@ def car_page_scraper(url):
 
 
 @app.task
-def car_db_worker():
+def car_db_saver():
     cars_list = []
     cache = caches['default']
 
